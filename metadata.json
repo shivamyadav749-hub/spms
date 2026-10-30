@@ -1,0 +1,7 @@
+{
+  "name": "SPMS — Solar Performance Monitoring System",
+  "description": "Solar Performance Monitoring System helping homeowners monitor generation, understand performance, track warranties, identify issues, and connect with verified technicians.",
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
