@@ -4,6 +4,8 @@ import { Sun, Mail, Lock, AlertCircle, User, Wrench } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
 import { Button, Input } from '../components/ui'
 
+const LOGO_URL = '/assets/aistudio/WhatsApp_Image_2026-11-11_at_1.59.36_PM_3c8e8888.jpeg'
+
 export function Login() {
   const navigate = useNavigate()
   const { signIn, loginAsDemo } = useAuth()
@@ -28,18 +30,30 @@ export function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2 text-2xl font-bold text-solar-700">
-            <div className="h-9 w-9 rounded-lg bg-solar-500 text-white flex items-center justify-center">
-              <Sun className="h-6 w-6" />
-            </div>
-            SPMS
-          </Link>
-          <h1 className="mt-6 text-2xl font-bold text-gray-900">Welcome back</h1>
-          <p className="mt-2 text-gray-600 text-sm">Sign in to monitor your solar system</p>
-        </div>
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <header className="bg-white border-b border-gray-200 px-4 sm:px-6 lg:px-8 h-16 flex items-center">
+        <Link to="/" className="flex items-center gap-3 group" aria-label="SPMS Home">
+          <img
+            src={LOGO_URL}
+            alt="SPMS — Solar Performance Monitoring System"
+            className="h-10 w-auto rounded-lg object-contain border border-gray-200 shadow-xs group-hover:opacity-90 transition-opacity"
+          />
+          <span className="text-lg font-bold text-solar-700">SPMS</span>
+        </Link>
+      </header>
+      <div className="flex-1 flex items-center justify-center px-4 py-12">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <Link to="/" className="inline-flex items-center justify-center">
+              <img
+                src={LOGO_URL}
+                alt="SPMS Logo"
+                className="h-20 w-auto rounded-xl object-contain border border-gray-200 shadow-sm"
+              />
+            </Link>
+            <h1 className="mt-5 text-2xl font-bold text-gray-900">Welcome back</h1>
+            <p className="mt-2 text-gray-600 text-sm">Sign in to monitor your solar system</p>
+          </div>
 
         {/* Demo Quick Logins */}
         <div className="card p-5 mb-6 bg-solar-50 border-solar-200">
@@ -123,6 +137,7 @@ export function Login() {
             <Link to="/register" className="text-solar-600 hover:underline font-medium">Create one</Link>
           </p>
         </div>
+      </div>
       </div>
     </div>
   )

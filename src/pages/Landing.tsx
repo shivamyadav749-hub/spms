@@ -2,9 +2,36 @@ import { Link } from 'react-router-dom'
 import { Sun, Zap, Bot, Shield, Users, ArrowRight, AlertTriangle, FileText } from 'lucide-react'
 import { Button } from '../components/ui'
 
+const LOGO_URL = '/assets/aistudio/WhatsApp_Image_2026-11-11_at_1.59.36_PM_3c8e8888.jpeg'
+
 export function Landing() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-solar-50 to-white">
+      {/* Header */}
+      <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-3 group" aria-label="SPMS Home">
+            <img
+              src={LOGO_URL}
+              alt="SPMS — Solar Performance Monitoring System"
+              className="h-11 w-auto rounded-lg object-contain border border-gray-200 shadow-xs group-hover:opacity-90 transition-opacity"
+            />
+            <div className="hidden sm:block">
+              <span className="text-lg font-bold text-solar-700 leading-none block">SPMS</span>
+              <span className="text-[11px] text-gray-500 block">Solar Performance Monitoring</span>
+            </div>
+          </Link>
+          <div className="flex items-center gap-3">
+            <Link to="/login">
+              <Button variant="ghost" size="sm">Sign In</Button>
+            </Link>
+            <Link to="/dashboard">
+              <Button size="sm">Dashboard</Button>
+            </Link>
+          </div>
+        </div>
+      </header>
+
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">

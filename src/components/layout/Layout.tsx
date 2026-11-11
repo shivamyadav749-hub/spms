@@ -1,4 +1,4 @@
-import { Outlet, NavLink } from 'react-router-dom'
+import { Outlet, NavLink, Link } from 'react-router-dom'
 import { useState } from 'react'
 import {
   Menu,
@@ -12,12 +12,13 @@ import {
   History,
   Building2,
   Bot,
-  Sun,
   Shield,
   ArrowRightLeft,
 } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 import { Button } from '../ui'
+
+const LOGO_URL = '/assets/aistudio/WhatsApp_Image_2026-11-11_at_1.59.36_PM_3c8e8888.jpeg'
 
 const ownerNav = [
   { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -55,12 +56,21 @@ export function Layout() {
       >
         <div className="flex flex-col h-full">
           <div className="p-4 border-b border-gray-200 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-lg bg-solar-500 text-white flex items-center justify-center">
-                <Sun className="h-5 w-5" />
+            <Link
+              to="/"
+              onClick={() => setSidebarOpen(false)}
+              className="flex items-center gap-2.5 group"
+            >
+              <img
+                src={LOGO_URL}
+                alt="SPMS Logo"
+                className="h-10 w-auto rounded-lg object-contain border border-gray-200 shadow-xs"
+              />
+              <div>
+                <h1 className="text-lg font-bold text-solar-700 leading-none">SPMS</h1>
+                <p className="text-[10px] text-gray-500 mt-0.5">Solar Monitoring</p>
               </div>
-              <h1 className="text-xl font-bold text-solar-700">SPMS</h1>
-            </div>
+            </Link>
             <button
               onClick={() => setSidebarOpen(false)}
               className="text-gray-400 hover:text-gray-600 p-1"
@@ -107,15 +117,17 @@ export function Layout() {
       {/* Desktop sidebar */}
       <aside className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:w-64 bg-white border-r border-gray-200 lg:flex flex-col">
         <div className="p-4 border-b border-gray-200">
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-solar-500 text-white flex items-center justify-center shadow-sm">
-              <Sun className="h-5 w-5" />
-            </div>
+          <Link to="/" className="flex items-center gap-2.5 group">
+            <img
+              src={LOGO_URL}
+              alt="SPMS Logo"
+              className="h-11 w-auto rounded-lg object-contain border border-gray-200 shadow-xs group-hover:opacity-90 transition-opacity"
+            />
             <div>
               <h1 className="text-xl font-bold text-solar-700 leading-none">SPMS</h1>
               <p className="text-[11px] text-gray-500 mt-1">Solar Performance Monitoring</p>
             </div>
-          </div>
+          </Link>
         </div>
 
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
@@ -159,14 +171,23 @@ export function Layout() {
         {/* Top header */}
         <header className="sticky top-0 z-30 bg-white border-b border-gray-200">
           <div className="flex items-center justify-between px-4 py-3 lg:px-6">
-            <button
-              className="lg:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100"
-              onClick={() => setSidebarOpen(true)}
-              aria-label="Open menu"
-            >
-              <Menu className="h-6 w-6" />
-            </button>
-            <div className="flex-1 lg:hidden font-bold text-solar-700">SPMS</div>
+            <div className="flex items-center gap-3">
+              <button
+                className="lg:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100"
+                onClick={() => setSidebarOpen(true)}
+                aria-label="Open menu"
+              >
+                <Menu className="h-6 w-6" />
+              </button>
+              <Link to="/" className="flex items-center gap-2.5 group" aria-label="SPMS Home">
+                <img
+                  src={LOGO_URL}
+                  alt="SPMS — Solar Performance Monitoring System"
+                  className="h-9 w-auto rounded-md object-contain border border-gray-200 shadow-xs group-hover:opacity-90 transition-opacity"
+                />
+                <span className="font-bold text-solar-700 text-base">SPMS</span>
+              </Link>
+            </div>
             <div className="flex items-center gap-3">
               <span className="hidden sm:inline-block text-xs bg-solar-50 text-solar-700 px-2.5 py-1 rounded-full font-medium border border-solar-200">
                 Demo Mode
