@@ -60,12 +60,12 @@ export function Installations() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Installations</h1>
           <p className="text-gray-600 text-sm">Manage your solar installations and hardware configurations</p>
         </div>
-        <Button onClick={() => setShowAddModal(true)}>
+        <Button onClick={() => setShowAddModal(true)} className="w-full sm:w-auto">
           <Plus className="h-4 w-4 mr-2" /> Add Installation
         </Button>
       </div>
@@ -75,7 +75,7 @@ export function Installations() {
           <Link
             key={inst.id}
             to={`/installations/${inst.id}`}
-            className="card p-6 hover:shadow-md transition-shadow group border-gray-200"
+            className="card p-4 sm:p-6 hover:shadow-md transition-shadow group border-gray-200"
           >
             <div className="flex items-start justify-between">
               <div>
@@ -115,14 +115,14 @@ export function Installations() {
 
       {/* Add Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="card w-full max-w-md p-6 bg-white shadow-xl relative animate-in fade-in zoom-in duration-150">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-3 sm:p-4">
+          <div className="card w-full max-w-md max-h-[90vh] overflow-y-auto p-4 sm:p-6 bg-white shadow-xl relative animate-in fade-in zoom-in duration-150">
             <div className="flex items-center justify-between pb-3 border-b border-gray-100 mb-4">
               <h2 className="text-lg font-bold text-gray-900">Add Solar Installation</h2>
               <button
                 type="button"
                 onClick={() => setShowAddModal(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-gray-400 hover:text-gray-600 p-1"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -152,7 +152,7 @@ export function Installations() {
                 value={address}
                 onChange={e => setAddress(e.target.value)}
               />
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Input
                   label="City"
                   placeholder="Springfield"
@@ -167,11 +167,11 @@ export function Installations() {
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-3">
-                <Button variant="outline" type="button" onClick={() => setShowAddModal(false)}>
+              <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 pt-3">
+                <Button variant="outline" type="button" onClick={() => setShowAddModal(false)} className="w-full sm:w-auto">
                   Cancel
                 </Button>
-                <Button type="submit">
+                <Button type="submit" className="w-full sm:w-auto">
                   Save Installation
                 </Button>
               </div>

@@ -45,21 +45,21 @@ export function Register() {
           <span className="text-lg font-bold text-solar-700">SPMS</span>
         </Link>
       </header>
-      <div className="flex-1 flex items-center justify-center px-4 py-12">
+      <div className="flex-1 flex items-center justify-center px-4 py-8 sm:py-12">
         <div className="w-full max-w-md">
-          <div className="text-center mb-8">
+          <div className="text-center mb-6 sm:mb-8">
             <Link to="/" className="inline-flex items-center justify-center">
               <img
                 src={LOGO_URL}
                 alt="SPMS Logo"
-                className="h-20 w-auto rounded-xl object-contain border border-gray-200 shadow-sm"
+                className="h-16 sm:h-20 w-auto rounded-xl object-contain border border-gray-200 shadow-sm"
               />
             </Link>
-            <h1 className="mt-5 text-2xl font-bold text-gray-900">Create your account</h1>
+            <h1 className="mt-4 sm:mt-5 text-2xl font-bold text-gray-900">Create your account</h1>
             <p className="mt-2 text-gray-600 text-sm">Start monitoring your solar system today</p>
           </div>
 
-          <div className="card p-6">
+          <div className="card p-4 sm:p-6">
             <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
                 <div className="flex items-center gap-2 p-3 rounded-lg bg-red-50 text-red-700 text-sm" role="alert">
@@ -117,7 +117,7 @@ export function Register() {
 
               <fieldset className="space-y-2">
                 <legend className="label">I am a</legend>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                   <label className="flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 hover:border-solar-300 cursor-pointer transition-colors has-[:checked]:border-solar-500 has-[:checked]:bg-solar-50">
                     <input
                       type="radio"

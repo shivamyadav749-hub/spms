@@ -35,6 +35,29 @@ export const api = {
       return appStore.getDashboardData(perfMatch[1]) as unknown as T
     }
 
+    // /api/v1/installations/:id/ml-diagnostics
+    const mlMatch = path.match(/^\/api\/v1\/installations\/([^/?]+)\/ml-diagnostics$/)
+    if (mlMatch) {
+      return appStore.runMLDiagnostics(mlMatch[1]) as unknown as T
+    }
+
+    // /api/v1/installations/:id/maintenance-calendar
+    const calMatch = path.match(/^\/api\/v1\/installations\/([^/?]+)\/maintenance-calendar$/)
+    if (calMatch) {
+      return appStore.getMaintenanceCalendar(calMatch[1]) as unknown as T
+    }
+
+    // /api/v1/installations/:id/energy-balance
+    const balanceMatch = path.match(/^\/api\/v1\/installations\/([^/?]+)\/energy-balance/)
+    if (balanceMatch) {
+      const url = new URL(path, 'http://localhost')
+      const daysParam = parseInt(url.searchParams.get('days') || '30', 10)
+      return appStore.getGenerationVsConsumption30Days(
+        balanceMatch[1],
+        Number.isFinite(daysParam) && daysParam > 0 ? daysParam : 30
+      ) as unknown as T
+    }
+
     // /api/v1/installations/:id/alerts
     const alertsMatch = path.match(/^\/api\/v1\/installations\/([^/?]+)\/alerts/)
     if (alertsMatch) {
@@ -116,6 +139,14 @@ export const api = {
 
   post: async <T>(path: string, body?: any): Promise<T> => {
     await delay(50)
+
+    // /api/v1/installations/:id/ml-diagnostics/scan
+    const mlScanMatch = path.match(/^\/api\/v1\/installations\/([^/?]+)\/ml-diagnostics\/scan$/)
+    if (mlScanMatch) {
+      return appStore.runMLDiagnostics(mlScanMatch[1], {
+        scenario: body?.scenario,
+      }) as unknown as T
+    }
 
     // /api/v1/ai/chat
     if (path === '/api/v1/ai/chat') {

@@ -35,23 +35,23 @@ export function ForgotPassword() {
           <span className="text-lg font-bold text-solar-700">SPMS</span>
         </Link>
       </header>
-      <div className="flex-1 flex items-center justify-center px-4 py-12">
+      <div className="flex-1 flex items-center justify-center px-4 py-8 sm:py-12">
         <div className="w-full max-w-md">
-          <div className="text-center mb-8">
+          <div className="text-center mb-6 sm:mb-8">
             <Link to="/" className="inline-flex items-center justify-center">
               <img
                 src={LOGO_URL}
                 alt="SPMS Logo"
-                className="h-20 w-auto rounded-xl object-contain border border-gray-200 shadow-sm"
+                className="h-16 sm:h-20 w-auto rounded-xl object-contain border border-gray-200 shadow-sm"
               />
             </Link>
-            <h1 className="mt-5 text-2xl font-bold text-gray-900">{success ? 'Check your email' : 'Reset password'}</h1>
+            <h1 className="mt-4 sm:mt-5 text-2xl font-bold text-gray-900">{success ? 'Check your email' : 'Reset password'}</h1>
             <p className="mt-2 text-gray-600 text-sm">
               {success ? "We've sent password reset instructions to your email." : 'Enter your email to receive a reset link'}
             </p>
           </div>
 
-          <div className="card p-6">
+          <div className="card p-4 sm:p-6">
             {success ? (
               <div className="text-center py-4">
                 <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />

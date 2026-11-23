@@ -12,7 +12,7 @@ Card.displayName = 'Card'
 
 export const CardHeader = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   ({ className, children, ...props }, ref) => (
-    <div ref={ref} className={clsx('px-6 py-4 border-b border-gray-200', className)} {...props}>
+    <div ref={ref} className={clsx('px-4 py-3.5 sm:px-6 sm:py-4 border-b border-gray-200', className)} {...props}>
       {children}
     </div>
   )
@@ -20,12 +20,12 @@ export const CardHeader = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivEleme
 CardHeader.displayName = 'CardHeader'
 
 export const CardTitle = ({ className, children }: { className?: string; children: React.ReactNode }) => (
-  <h3 className={clsx('text-lg font-semibold text-gray-900', className)}>{children}</h3>
+  <h3 className={clsx('text-base sm:text-lg font-semibold text-gray-900', className)}>{children}</h3>
 )
 
 export const CardContent = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   ({ className, children, ...props }, ref) => (
-    <div ref={ref} className={clsx('p-6', className)} {...props}>
+    <div ref={ref} className={clsx('p-4 sm:p-6', className)} {...props}>
       {children}
     </div>
   )

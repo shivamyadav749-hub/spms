@@ -98,39 +98,39 @@ export function Settings() {
       <Card>
         <CardHeader><CardTitle>Notifications & Display</CardTitle></CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex items-center justify-between py-1">
-            <div className="flex items-center gap-3">
-              <Bell className="h-5 w-5 text-gray-400" />
-              <div>
+          <div className="flex items-center justify-between gap-3 py-1">
+            <div className="flex items-center gap-3 min-w-0">
+              <Bell className="h-5 w-5 text-gray-400 flex-shrink-0" />
+              <div className="min-w-0">
                 <p className="text-sm font-medium text-gray-800">Email alerts & notifications</p>
                 <p className="text-xs text-gray-500">Receive alerts when generation falls below 70% threshold</p>
               </div>
             </div>
-            <input type="checkbox" defaultChecked className="h-4 w-4 rounded text-solar-600 focus:ring-solar-500" />
+            <input type="checkbox" defaultChecked className="h-4 w-4 rounded text-solar-600 focus:ring-solar-500 flex-shrink-0" />
           </div>
-          <div className="flex items-center justify-between py-1 border-t border-gray-100">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3 py-2 border-t border-gray-100">
             <div className="flex items-center gap-3">
-              <Globe className="h-5 w-5 text-gray-400" />
+              <Globe className="h-5 w-5 text-gray-400 flex-shrink-0" />
               <div>
                 <p className="text-sm font-medium text-gray-800">Language</p>
                 <p className="text-xs text-gray-500">Interface language</p>
               </div>
             </div>
-            <select className="input w-32 text-xs">
+            <select className="input w-full sm:w-36 text-xs">
               <option>English</option>
               <option>Hindi</option>
               <option>Spanish</option>
             </select>
           </div>
-          <div className="flex items-center justify-between py-1 border-t border-gray-100">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3 py-2 border-t border-gray-100">
             <div className="flex items-center gap-3">
-              <Palette className="h-5 w-5 text-gray-400" />
+              <Palette className="h-5 w-5 text-gray-400 flex-shrink-0" />
               <div>
                 <p className="text-sm font-medium text-gray-800">Theme</p>
                 <p className="text-xs text-gray-500">Color scheme</p>
               </div>
             </div>
-            <select className="input w-32 text-xs">
+            <select className="input w-full sm:w-36 text-xs">
               <option>Light Clean</option>
               <option>System</option>
             </select>

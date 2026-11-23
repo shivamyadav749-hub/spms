@@ -41,26 +41,26 @@ export function Login() {
           <span className="text-lg font-bold text-solar-700">SPMS</span>
         </Link>
       </header>
-      <div className="flex-1 flex items-center justify-center px-4 py-12">
+      <div className="flex-1 flex items-center justify-center px-4 py-8 sm:py-12">
         <div className="w-full max-w-md">
-          <div className="text-center mb-8">
+          <div className="text-center mb-6 sm:mb-8">
             <Link to="/" className="inline-flex items-center justify-center">
               <img
                 src={LOGO_URL}
                 alt="SPMS Logo"
-                className="h-20 w-auto rounded-xl object-contain border border-gray-200 shadow-sm"
+                className="h-16 sm:h-20 w-auto rounded-xl object-contain border border-gray-200 shadow-sm"
               />
             </Link>
-            <h1 className="mt-5 text-2xl font-bold text-gray-900">Welcome back</h1>
+            <h1 className="mt-4 sm:mt-5 text-2xl font-bold text-gray-900">Welcome back</h1>
             <p className="mt-2 text-gray-600 text-sm">Sign in to monitor your solar system</p>
           </div>
 
         {/* Demo Quick Logins */}
-        <div className="card p-5 mb-6 bg-solar-50 border-solar-200">
+        <div className="card p-4 sm:p-5 mb-5 sm:mb-6 bg-solar-50 border-solar-200">
           <p className="text-xs font-semibold uppercase tracking-wider text-solar-800 mb-3">
             Quick Demo Access (1-Click)
           </p>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
             <button
               type="button"
               onClick={() => handleQuickLogin('owner')}
@@ -86,7 +86,7 @@ export function Login() {
           </div>
         </div>
 
-        <div className="card p-6">
+        <div className="card p-4 sm:p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
               <div className="flex items-center gap-2 p-3 rounded-lg bg-red-50 text-red-700 text-sm" role="alert">
@@ -119,7 +119,7 @@ export function Login() {
               leftIcon={<Lock className="h-5 w-5 text-gray-400" />}
             />
 
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-2">
               <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
                 <input type="checkbox" defaultChecked className="rounded border-gray-300 text-solar-600 focus:ring-solar-500" />
                 Remember me

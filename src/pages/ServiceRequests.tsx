@@ -81,7 +81,7 @@ export function ServiceRequests() {
           <h1 className="text-2xl font-bold text-gray-900">Service Requests</h1>
           <p className="text-gray-600 text-sm">Track and schedule maintenance, cleanings, and repairs</p>
         </div>
-        <Button onClick={() => setShowModal(true)}>
+        <Button onClick={() => setShowModal(true)} className="w-full sm:w-auto">
           <Plus className="h-4 w-4 mr-1.5" /> New Service Request
         </Button>
       </div>
@@ -134,7 +134,7 @@ export function ServiceRequests() {
                 className="p-4 rounded-lg border border-gray-200 bg-gray-50/50 hover:bg-white transition-colors"
               >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     <span className="font-mono text-xs font-semibold text-gray-500">{r.id}</span>
                     <Badge variant={getStatusVariant(r.status)}>{r.status.replace('_', ' ')}</Badge>
                     <span className="text-xs font-medium text-gray-700 bg-gray-100 px-2 py-0.5 rounded">
@@ -146,7 +146,7 @@ export function ServiceRequests() {
                   </span>
                 </div>
                 <p className="text-sm text-gray-800 mt-2 font-medium">{r.description}</p>
-                <div className="flex items-center gap-4 mt-3 text-xs text-gray-500">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 mt-3 text-xs text-gray-500">
                   <span className="flex items-center gap-1">
                     <FileText className="h-3.5 w-3.5 text-gray-400" />
                     {r.installation_name || 'Home Solar'}
@@ -170,14 +170,14 @@ export function ServiceRequests() {
 
       {/* New Request Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="card w-full max-w-lg p-6 bg-white shadow-xl relative animate-in fade-in zoom-in duration-150">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-3 sm:p-4">
+          <div className="card w-full max-w-lg max-h-[90vh] overflow-y-auto p-4 sm:p-6 bg-white shadow-xl relative animate-in fade-in zoom-in duration-150">
             <div className="flex items-center justify-between pb-3 border-b border-gray-100 mb-4">
               <h2 className="text-lg font-bold text-gray-900">Create Service Request</h2>
               <button
                 type="button"
                 onClick={() => setShowModal(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-gray-400 hover:text-gray-600 p-1"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -214,11 +214,11 @@ export function ServiceRequests() {
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-3">
-                <Button variant="outline" type="button" onClick={() => setShowModal(false)}>
+              <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 pt-3">
+                <Button variant="outline" type="button" onClick={() => setShowModal(false)} className="w-full sm:w-auto">
                   Cancel
                 </Button>
-                <Button type="submit">
+                <Button type="submit" className="w-full sm:w-auto">
                   Submit Request
                 </Button>
               </div>

@@ -190,7 +190,7 @@ export function Technicians() {
                       setSelectedTech(t)
                       setDescription(`Please inspect and diagnose system performance for ${t.full_name}.`)
                     }}
-                    className="self-end sm:self-center"
+                    className="w-full sm:w-auto sm:self-center"
                   >
                     <Wrench className="h-4 w-4 mr-1.5" /> Request Service
                   </Button>
@@ -203,8 +203,8 @@ export function Technicians() {
 
       {/* Request Modal */}
       {selectedTech && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="card w-full max-w-lg p-6 bg-white shadow-xl relative animate-in fade-in zoom-in duration-150">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-3 sm:p-4">
+          <div className="card w-full max-w-lg max-h-[90vh] overflow-y-auto p-4 sm:p-6 bg-white shadow-xl relative animate-in fade-in zoom-in duration-150">
             <div className="flex items-center justify-between pb-3 border-b border-gray-100 mb-4">
               <div>
                 <h2 className="text-lg font-bold text-gray-900">Request Service</h2>
@@ -213,7 +213,7 @@ export function Technicians() {
               <button
                 type="button"
                 onClick={() => setSelectedTech(null)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-gray-400 hover:text-gray-600 p-1"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -254,11 +254,11 @@ export function Technicians() {
                   />
                 </div>
 
-                <div className="flex justify-end gap-2 pt-3">
-                  <Button variant="outline" type="button" onClick={() => setSelectedTech(null)}>
+                <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 pt-3">
+                  <Button variant="outline" type="button" onClick={() => setSelectedTech(null)} className="w-full sm:w-auto">
                     Cancel
                   </Button>
-                  <Button type="submit">
+                  <Button type="submit" className="w-full sm:w-auto">
                     Send Service Request
                   </Button>
                 </div>

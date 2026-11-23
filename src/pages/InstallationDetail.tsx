@@ -30,48 +30,48 @@ export function InstallationDetail() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-3 sm:gap-4">
         <Link to="/installations">
-          <Button variant="ghost">
+          <Button variant="ghost" size="sm">
             <ArrowLeft className="h-4 w-4 mr-1" /> Back
           </Button>
         </Link>
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">{data.name}</h1>
+        <div className="min-w-0">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 truncate">{data.name}</h1>
           <p className="text-sm font-mono text-gray-500">{data.spms_id}</p>
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <InfoCard icon={Zap} label="Rated Capacity" value={`${data.capacity_kw} kW`} />
         <InfoCard icon={Calendar} label="Installed Date" value={data.installed_at ? new Date(data.installed_at).toLocaleDateString() : '—'} />
         <InfoCard icon={MapPin} label="Location" value={`${data.city || ''} ${data.postal_code || ''}`.trim() || '—'} />
         <InfoCard icon={Building2} label="Mode" value={<Badge variant="info">{data.monitoring_mode}</Badge>} />
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
         <Card>
           <CardHeader><CardTitle>System Details</CardTitle></CardHeader>
           <CardContent className="space-y-3 text-sm">
-            <div className="flex justify-between py-1 border-b border-gray-100">
-              <span className="text-gray-500">Address</span>
-              <span className="font-medium text-gray-900">{data.address || '—'}</span>
+            <div className="flex justify-between gap-4 py-1 border-b border-gray-100">
+              <span className="text-gray-500 flex-shrink-0">Address</span>
+              <span className="font-medium text-gray-900 text-right">{data.address || '—'}</span>
             </div>
-            <div className="flex justify-between py-1 border-b border-gray-100">
-              <span className="text-gray-500">City</span>
-              <span className="font-medium text-gray-900">{data.city || '—'}</span>
+            <div className="flex justify-between gap-4 py-1 border-b border-gray-100">
+              <span className="text-gray-500 flex-shrink-0">City</span>
+              <span className="font-medium text-gray-900 text-right">{data.city || '—'}</span>
             </div>
-            <div className="flex justify-between py-1 border-b border-gray-100">
-              <span className="text-gray-500">Postal Code</span>
-              <span className="font-medium text-gray-900">{data.postal_code || '—'}</span>
+            <div className="flex justify-between gap-4 py-1 border-b border-gray-100">
+              <span className="text-gray-500 flex-shrink-0">Postal Code</span>
+              <span className="font-medium text-gray-900 text-right">{data.postal_code || '—'}</span>
             </div>
-            <div className="flex justify-between py-1 border-b border-gray-100">
-              <span className="text-gray-500">Coordinates</span>
-              <span className="font-medium text-gray-900">{data.latitude?.toFixed(4)}, {data.longitude?.toFixed(4)}</span>
+            <div className="flex justify-between gap-4 py-1 border-b border-gray-100">
+              <span className="text-gray-500 flex-shrink-0">Coordinates</span>
+              <span className="font-medium text-gray-900 text-right">{data.latitude?.toFixed(4)}, {data.longitude?.toFixed(4)}</span>
             </div>
-            <div className="flex justify-between py-1">
-              <span className="text-gray-500">Registered</span>
-              <span className="font-medium text-gray-900">{data.created_at ? new Date(data.created_at).toLocaleDateString() : '—'}</span>
+            <div className="flex justify-between gap-4 py-1">
+              <span className="text-gray-500 flex-shrink-0">Registered</span>
+              <span className="font-medium text-gray-900 text-right">{data.created_at ? new Date(data.created_at).toLocaleDateString() : '—'}</span>
             </div>
           </CardContent>
         </Card>

@@ -3,25 +3,26 @@ import { Sun, Zap, Bot, Shield, Users, ArrowRight, AlertTriangle, FileText } fro
 import { Button } from '../components/ui'
 
 const LOGO_URL = '/assets/aistudio/WhatsApp_Image_2026-11-11_at_1.59.36_PM_3c8e8888.jpeg'
+const HERO_IMAGE_URL = '/assets/aistudio/Code_Generated_Image_2fa93045.png'
 
 export function Landing() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-solar-50 to-white">
       {/* Header */}
       <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-3 group" aria-label="SPMS Home">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between gap-2">
+          <Link to="/" className="flex items-center gap-2.5 group min-w-0" aria-label="SPMS Home">
             <img
               src={LOGO_URL}
               alt="SPMS — Solar Performance Monitoring System"
-              className="h-11 w-auto rounded-lg object-contain border border-gray-200 shadow-xs group-hover:opacity-90 transition-opacity"
+              className="h-9 sm:h-11 w-auto rounded-lg object-contain border border-gray-200 shadow-xs group-hover:opacity-90 transition-opacity flex-shrink-0"
             />
-            <div className="hidden sm:block">
-              <span className="text-lg font-bold text-solar-700 leading-none block">SPMS</span>
-              <span className="text-[11px] text-gray-500 block">Solar Performance Monitoring</span>
+            <div>
+              <span className="text-base sm:text-lg font-bold text-solar-700 leading-none block">SPMS</span>
+              <span className="hidden sm:block text-[11px] text-gray-500">Solar Performance Monitoring</span>
             </div>
           </Link>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
             <Link to="/login">
               <Button variant="ghost" size="sm">Sign In</Button>
             </Link>
@@ -34,44 +35,56 @@ export function Landing() {
 
       {/* Hero */}
       <section className="relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
-          <div className="text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-solar-100 text-solar-800 text-sm font-medium mb-6 border border-solar-200">
-              <Sun className="h-4 w-4 text-solar-600" />
-              <span>DEMO MODE — Simulated solar data. Ready for immediate exploration.</span>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 lg:py-24">
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            <div className="lg:col-span-7 text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl sm:rounded-full bg-solar-100 text-solar-800 text-xs sm:text-sm font-medium mb-5 sm:mb-6 border border-solar-200 max-w-full">
+                <Sun className="h-4 w-4 text-solar-600 flex-shrink-0" />
+                <span>DEMO MODE — Simulated solar data. Ready for immediate exploration.</span>
+              </div>
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold text-gray-900 tracking-tight mb-5 sm:mb-6">
+                Your Solar Energy.<br />
+                <span className="text-solar-600">Simplified.</span>
+              </h1>
+              <p className="text-base sm:text-xl text-gray-600 max-w-2xl mx-auto lg:mx-0 mb-8 sm:mb-10 leading-relaxed">
+                SPMS helps homeowners monitor solar generation, understand performance,
+                identify issues, manage warranties, and find nearby technicians — all in one simple dashboard.
+              </p>
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4 max-w-md sm:max-w-none mx-auto lg:mx-0">
+                <Link to="/dashboard" className="w-full sm:w-auto">
+                  <Button size="lg" className="w-full sm:w-auto shadow-md">
+                    <span className="mr-2">Explore Dashboard</span>
+                    <ArrowRight className="h-5 w-5" />
+                  </Button>
+                </Link>
+                <Link to="/login" className="w-full sm:w-auto">
+                  <Button variant="outline" size="lg" className="w-full sm:w-auto">
+                    Sign In / Switch Roles
+                  </Button>
+                </Link>
+              </div>
             </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 tracking-tight mb-6">
-              Your Solar Energy.<br />
-              <span className="text-solar-600">Simplified.</span>
-            </h1>
-            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto mb-10 leading-relaxed">
-              SPMS helps homeowners monitor solar generation, understand performance,
-              identify issues, manage warranties, and find nearby technicians — all in one simple dashboard.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link to="/dashboard">
-                <Button size="lg" className="w-full sm:w-auto shadow-md">
-                  <span className="mr-2">Explore Dashboard</span>
-                  <ArrowRight className="h-5 w-5" />
-                </Button>
-              </Link>
-              <Link to="/login">
-                <Button variant="outline" size="lg" className="w-full sm:w-auto">
-                  Sign In / Switch Roles
-                </Button>
-              </Link>
+
+            <div className="lg:col-span-5 flex justify-center">
+              <div className="w-full max-w-[280px] sm:max-w-sm lg:max-w-md rounded-2xl bg-white p-2.5 sm:p-3 border border-solar-200/80 shadow-xl">
+                <img
+                  src={HERO_IMAGE_URL}
+                  alt="SPMS — Solar Performance Monitoring System emblem"
+                  className="w-full h-auto rounded-xl object-contain"
+                />
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Features */}
-      <section className="py-20 bg-white border-y border-gray-100">
+      <section className="py-12 sm:py-20 bg-white border-y border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-900 mb-8 sm:mb-12">
             Everything you need to understand your solar system
           </h2>
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-8">
             {[
               {
                 icon: Zap,
@@ -117,10 +130,10 @@ export function Landing() {
       </section>
 
       {/* How it works */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-12 sm:py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">How it works</h2>
-          <div className="grid md:grid-cols-3 gap-8">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-900 mb-10 sm:mb-12">How it works</h2>
+          <div className="grid md:grid-cols-3 gap-7 sm:gap-8">
             {[
               {
                 step: '01',
@@ -161,9 +174,9 @@ export function Landing() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-gray-400 py-12">
+      <footer className="bg-gray-900 text-gray-400 py-10 sm:py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <div className="h-7 w-7 rounded bg-solar-500 text-white flex items-center justify-center">

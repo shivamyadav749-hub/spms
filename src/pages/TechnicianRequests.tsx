@@ -53,7 +53,8 @@ export function TechnicianRequests() {
               { value: 'completed', label: 'Completed' },
               { value: 'requested', label: 'Unassigned Pool' },
             ]}
-            className="w-56"
+            wrapperClassName="w-full sm:w-auto"
+            className="w-full sm:w-56"
             value={statusFilter}
             onChange={e => setStatusFilter(e.target.value)}
           />
@@ -81,7 +82,7 @@ export function TechnicianRequests() {
                 className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-lg border border-gray-200 bg-gray-50/50 hover:bg-white transition-colors"
               >
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2.5">
+                  <div className="flex flex-wrap items-center gap-2">
                     <span className="font-mono text-xs font-semibold text-gray-500">{r.id}</span>
                     <Badge variant={getStatusVariant(r.status)}>
                       {r.status.replace('_', ' ')}
@@ -91,7 +92,7 @@ export function TechnicianRequests() {
                     </span>
                   </div>
                   <p className="text-sm font-medium text-gray-800 mt-2">{r.description}</p>
-                  <div className="flex flex-wrap items-center gap-4 mt-2 text-xs text-gray-500">
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 mt-2 text-xs text-gray-500">
                     <span className="flex items-center gap-1">
                       <FileText className="h-3 w-3 text-gray-400" />
                       {r.installation_name || 'Home Solar'}
@@ -103,9 +104,9 @@ export function TechnicianRequests() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 self-end sm:self-center">
-                  <Link to={`/technician/requests/${r.id}`}>
-                    <Button variant="outline" size="sm">
+                <div className="flex items-center gap-2 w-full sm:w-auto sm:self-center">
+                  <Link to={`/technician/requests/${r.id}`} className="w-full sm:w-auto">
+                    <Button variant="outline" size="sm" className="w-full sm:w-auto">
                       Details & Notes <ArrowRight className="h-3.5 w-3.5 ml-1" />
                     </Button>
                   </Link>

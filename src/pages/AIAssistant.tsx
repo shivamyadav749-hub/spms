@@ -76,27 +76,28 @@ export function AIAssistant() {
         </p>
       </div>
 
-      <Card className="flex flex-col h-[600px] shadow-sm">
-        <CardHeader className="flex flex-row items-center justify-between py-3">
+      <Card className="flex flex-col h-[calc(100dvh-13rem)] min-h-[440px] max-h-[620px] shadow-sm">
+        <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 py-3">
           <CardTitle className="text-base flex items-center gap-2">
-            <Bot className="h-5 w-5 text-solar-600" /> System Telemetry Chat
+            <Bot className="h-5 w-5 text-solar-600 flex-shrink-0" /> System Telemetry Chat
           </CardTitle>
           {installations.length > 0 && (
             <Select
               value={selectedInstallation}
               onChange={e => setSelectedInstallation(e.target.value)}
-              className="w-56 text-xs"
+              wrapperClassName="w-full sm:w-auto"
+              className="w-full sm:w-56 text-xs"
               options={installations.map(inst => ({ value: inst.id, label: `${inst.name} (${inst.spms_id})` }))}
             />
           )}
         </CardHeader>
 
         {/* Message Log */}
-        <CardContent className="flex-1 overflow-y-auto space-y-4 p-4 bg-gray-50/50">
+        <CardContent className="flex-1 overflow-y-auto space-y-4 p-3 sm:p-4 bg-gray-50/50">
           {messages.map((msg, i) => (
             <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
               <div
-                className={`max-w-[85%] p-3.5 rounded-2xl text-sm leading-relaxed whitespace-pre-line shadow-xs ${
+                className={`max-w-[90%] sm:max-w-[85%] p-3 sm:p-3.5 rounded-2xl text-sm leading-relaxed whitespace-pre-line shadow-xs ${
                   msg.role === 'user'
                     ? 'bg-solar-600 text-white rounded-br-xs'
                     : 'bg-white border border-gray-200 text-gray-800 rounded-bl-xs'
@@ -115,21 +116,23 @@ export function AIAssistant() {
         </CardContent>
 
         {/* Input Bar */}
-        <div className="border-t border-gray-200 p-4 bg-white space-y-3">
+        <div className="border-t border-gray-200 p-3 sm:p-4 bg-white space-y-3">
           <div className="flex gap-2">
             <Input
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleSend()}
-              placeholder="Ask about current power, temperatures, alerts, warranties..."
+              placeholder="Ask about current power, alerts, warranties..."
               className="flex-1"
               disabled={loading || !selectedInstallation}
             />
             <Button
               onClick={() => handleSend()}
               disabled={loading || !input.trim() || !selectedInstallation}
+              className="flex-shrink-0"
             >
-              <Send className="h-4 w-4 mr-1" /> Send
+              <Send className="h-4 w-4 sm:mr-1" />
+              <span className="hidden sm:inline">Send</span>
             </Button>
           </div>
 
@@ -155,9 +158,9 @@ export function AIAssistant() {
         </div>
       </Card>
 
-      <div className="text-xs text-gray-500 text-center flex items-center justify-center gap-2">
+      <div className="text-xs text-gray-500 text-center flex flex-wrap items-center justify-center gap-2">
         <Badge variant="info">Grounded Context</Badge>
-        Responses use your simulated inverter power readings, ambient temperature, warranty tables, and service history.
+        <span>Responses use your simulated inverter power readings, ambient temperature, warranty tables, and service history.</span>
       </div>
     </div>
   )

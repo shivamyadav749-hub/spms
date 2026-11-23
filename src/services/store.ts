@@ -16,7 +16,12 @@ import {
   ServiceRecord,
   ChatMessage,
   ChatSession,
+  MLPredictiveReport,
+  MaintenanceEvent,
+  GenerationVsConsumptionPoint,
+  GenerationVsConsumptionReport,
 } from '../types'
+import { analyzeInstallationTelemetry, candidateToAlert } from '../lib/mlDiagnostics'
 
 const STORAGE_KEY = 'spms_solar_app_db_v1'
 
@@ -404,6 +409,7 @@ function createInitialSeed(): DBState {
       technician_name: 'Demo Technician',
       installation_name: 'Demo Home Solar',
       created_at: new Date(Date.now() - 5 * 86400000).toISOString(),
+      scheduled_date: new Date(Date.now() + 4 * 86400000).toISOString().slice(0, 10),
       completed_at: null,
     },
     {
@@ -417,6 +423,7 @@ function createInitialSeed(): DBState {
       technician_name: null,
       installation_name: 'Demo Home Solar',
       created_at: new Date(Date.now() - 2 * 86400000).toISOString(),
+      scheduled_date: new Date(Date.now() + 9 * 86400000).toISOString().slice(0, 10),
       completed_at: null,
     },
   ]
@@ -790,11 +797,117 @@ class AppStore {
     }
   }
 
+  getGenerationVsConsumption30Days(
+    installationId: string,
+    days = 30
+  ): GenerationVsConsumptionReport {
+    const inst = this.getInstallation(installationId)
+    if (!inst) {
+      throw new Error('Installation not found')
+    }
+
+    const readings = this.state.readings.filter(r => r.installation_id === installationId)
+    const actualByDay = new Map<string, number>()
+    for (const r of readings) {
+      const dayStr = r.timestamp.slice(0, 10)
+      actualByDay.set(dayStr, (actualByDay.get(dayStr) || 0) + (r.interval_energy_kwh || 0))
+    }
+
+    const seedBase = installationId
+      .split('')
+      .reduce((acc, ch) => acc + ch.charCodeAt(0), 0)
+
+    const series: GenerationVsConsumptionPoint[] = []
+    let totalGenerated = 0
+    let totalConsumed = 0
+
+    const today = new Date()
+    today.setHours(12, 0, 0, 0)
+
+    for (let offset = days - 1; offset >= 0; offset--) {
+      const d = new Date(today)
+      d.setDate(d.getDate() - offset)
+      const dateStr = d.toISOString().slice(0, 10)
+
+      let generatedKwh: number
+      if (actualByDay.has(dateStr)) {
+        generatedKwh = actualByDay.get(dateStr)!
+      } else {
+        // Deterministically simulate historical generation aligned with installation capacity
+        const daySeed = seedBase + d.getFullYear() * 372 + (d.getMonth() + 1) * 31 + d.getDate()
+        const sim = new SolarSimulator(daySeed)
+        const scenario =
+          daySeed % 11 === 0 ? 'cloudy' : daySeed % 17 === 0 ? 'high_temp' : 'normal'
+        const dayReadings = sim.generateDailyProfile(
+          installationId,
+          inst.capacity_kw,
+          d,
+          scenario
+        )
+        generatedKwh = dayReadings.reduce((sum, r) => sum + (r.interval_energy_kwh || 0), 0)
+      }
+
+      // Realistic residential daily home consumption scaled around array sizing
+      const dayOfWeek = d.getDay()
+      const isWeekend = dayOfWeek === 0 || dayOfWeek === 6
+      const pseudoRand = Math.abs(Math.sin(seedBase * 13 + offset * 7.3))
+      const baseLoadKwh = Math.max(10, inst.capacity_kw * 3.35)
+      const weekendFactor = isWeekend ? 1.14 : 0.96
+      const variation = 0.84 + pseudoRand * 0.34
+      const consumedKwh = baseLoadKwh * weekendFactor * variation
+
+      const genRounded = Number(generatedKwh.toFixed(2))
+      const consRounded = Number(consumedKwh.toFixed(2))
+      const netRounded = Number((genRounded - consRounded).toFixed(2))
+
+      totalGenerated += genRounded
+      totalConsumed += consRounded
+
+      series.push({
+        date: dateStr,
+        generated_kwh: genRounded,
+        consumed_kwh: consRounded,
+        net_kwh: netRounded,
+      })
+    }
+
+    const totalGenRounded = Number(totalGenerated.toFixed(1))
+    const totalConsRounded = Number(totalConsumed.toFixed(1))
+    const netBalance = Number((totalGenRounded - totalConsRounded).toFixed(1))
+    const selfSufficiencyPct =
+      totalConsRounded > 0
+        ? Math.min(100, Math.round((totalGenRounded / totalConsRounded) * 100))
+        : 0
+
+    return {
+      installation_id: installationId,
+      period_days: days,
+      total_generated_kwh: totalGenRounded,
+      total_consumed_kwh: totalConsRounded,
+      net_balance_kwh: netBalance,
+      self_sufficiency_pct: selfSufficiencyPct,
+      daily_series: series,
+    }
+  }
+
   // --- Alerts ---
   getAlerts(installationId: string, status?: string): Alert[] {
     return this.state.alerts.filter(
       a => a.installation_id === installationId && (!status || a.status === status)
     )
+  }
+
+  getAllActiveAlertsSummary(): {
+    totalActive: number
+    predictiveActive: number
+    recentActive: Alert[]
+  } {
+    const active = this.state.alerts.filter(a => a.status === 'active')
+    return {
+      totalActive: active.length,
+      predictiveActive: active.filter(a => a.source === 'ml_predictive').length,
+      recentActive: active.slice(0, 5),
+    }
   }
 
   updateAlertStatus(alertId: string, status: Alert['status']): Alert {
@@ -812,7 +925,137 @@ class AppStore {
     })
     const updated = { ...this.state, alerts }
     this.saveState(updated)
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('spms-alerts-updated'))
+    }
     return alerts.find(a => a.id === alertId)!
+  }
+
+  // --- ML Predictive Diagnostics & Anomaly Alerts ---
+  runMLDiagnostics(
+    installationId: string,
+    options?: { scenario?: 'panel_degradation' | 'inverter_issue' | 'reset' }
+  ): MLPredictiveReport {
+    const inst = this.getInstallation(installationId)
+    if (!inst) {
+      throw new Error('Installation not found')
+    }
+
+    let readings = this.state.readings
+    let alerts = this.state.alerts
+
+    if (options?.scenario) {
+      const sim = new SolarSimulator(42 + Math.floor(Date.now() % 100))
+      const today = new Date()
+      const freshReadings: SolarReading[] = []
+
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(today)
+        d.setDate(d.getDate() - i)
+        const baseDaily = sim.generateDailyProfile(installationId, inst.capacity_kw, d, 'normal')
+
+        if (options.scenario === 'panel_degradation') {
+          // Progressive subtle efficiency decay across the week (~3.8%/day) before critical failure
+          const daysElapsed = 6 - i
+          const decayFactor = Math.max(0.71, 1 - daysElapsed * 0.038)
+          for (const r of baseDaily) {
+            if ((r.irradiance_w_m2 ?? 0) >= 80) {
+              r.power_w = Number((r.power_w * decayFactor).toFixed(2))
+              r.interval_energy_kwh = Number((r.power_w / 1000).toFixed(4))
+              if (r.current_a !== null && r.voltage_v) {
+                r.current_a = Number((r.power_w / r.voltage_v).toFixed(2))
+              }
+            }
+          }
+        } else if (options.scenario === 'inverter_issue' && i <= 1) {
+          // Pre-fault DC bus voltage ripple/sags, MPPT conversion gap, and elevated inverter heat
+          for (let idx = 0; idx < baseDaily.length; idx++) {
+            const r = baseDaily[idx]
+            if ((r.irradiance_w_m2 ?? 0) >= 80) {
+              const ripple = idx % 2 === 0 ? -24 : 23
+              r.voltage_v = Number(((r.voltage_v ?? 350) + ripple).toFixed(2))
+              r.power_w = Number((r.power_w * 0.83).toFixed(2))
+              r.interval_energy_kwh = Number((r.power_w / 1000).toFixed(4))
+              r.temperature_c = Number(((r.temperature_c ?? 35) + 12).toFixed(2))
+              if (r.voltage_v > 0) {
+                r.current_a = Number((r.power_w / r.voltage_v).toFixed(2))
+              }
+            }
+          }
+        }
+
+        freshReadings.push(...baseDaily)
+      }
+
+      const otherReadings = readings.filter(r => r.installation_id !== installationId)
+      readings = [...otherReadings, ...freshReadings]
+
+      // Clear previous simulated ML alerts for this installation when switching scenarios
+      alerts = alerts.filter(
+        a => !(a.installation_id === installationId && a.source === 'ml_predictive')
+      )
+
+      this.saveState({
+        ...this.state,
+        readings,
+        alerts,
+      })
+    }
+
+    const dash = this.getDashboardData(installationId)
+    const instReadings = this.state.readings.filter(r => r.installation_id === installationId)
+    const { report, candidates } = analyzeInstallationTelemetry(
+      inst,
+      instReadings,
+      dash.daily_generation
+    )
+
+    const newlyTriggeredAlerts: Alert[] = []
+    let nextAlerts = [...this.state.alerts]
+    let alertsChanged = Boolean(options?.scenario)
+
+    for (const candidate of candidates) {
+      const existingIdx = nextAlerts.findIndex(
+        a =>
+          a.installation_id === installationId &&
+          a.category === candidate.category &&
+          (a.status === 'active' || a.status === 'acknowledged')
+      )
+
+      if (existingIdx === -1) {
+        const created = candidateToAlert(installationId, candidate)
+        nextAlerts = [created, ...nextAlerts]
+        newlyTriggeredAlerts.push(created)
+        alertsChanged = true
+      } else if (nextAlerts[existingIdx].status === 'active') {
+        nextAlerts[existingIdx] = {
+          ...nextAlerts[existingIdx],
+          message: candidate.message,
+          confidence: candidate.confidence,
+          risk_score: candidate.risk_score,
+          predicted_days_to_critical: candidate.predicted_days_to_critical,
+          recommended_action: candidate.recommended_action,
+          model_signals: candidate.model_signals,
+        }
+      }
+    }
+
+    if (alertsChanged) {
+      this.saveState({ ...this.state, alerts: nextAlerts })
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('spms-alerts-updated'))
+      }
+    }
+
+    const predictiveAlerts = nextAlerts.filter(
+      a => a.installation_id === installationId && a.source === 'ml_predictive'
+    )
+
+    return {
+      ...report,
+      newly_triggered_alerts: newlyTriggeredAlerts,
+      predictive_alerts: predictiveAlerts,
+    }
   }
 
   // --- Technicians ---
@@ -941,10 +1184,12 @@ class AppStore {
     issue_category: string
     description: string
     technician_id?: string | null
+    scheduled_date?: string | null
   }): ServiceRequest {
     const inst = this.getInstallation(data.installation_id)
     const tech = data.technician_id ? this.getTechnicianProfile(data.technician_id) : null
     const id = `SR-${Math.floor(100 + Math.random() * 900)}`
+    const defaultScheduled = new Date(Date.now() + 3 * 86400000).toISOString().slice(0, 10)
 
     const newReq: ServiceRequest = {
       id,
@@ -957,6 +1202,7 @@ class AppStore {
       technician_name: tech?.full_name || null,
       installation_name: inst?.name || 'Solar Installation',
       created_at: new Date().toISOString(),
+      scheduled_date: data.scheduled_date || defaultScheduled,
       completed_at: null,
       records: [],
     }
@@ -967,6 +1213,119 @@ class AppStore {
     }
     this.saveState(updated)
     return newReq
+  }
+
+  getMaintenanceCalendar(installationId: string): MaintenanceEvent[] {
+    const events: MaintenanceEvent[] = []
+    const addDaysStr = (offsetDays: number) => {
+      const d = new Date()
+      d.setHours(12, 0, 0, 0)
+      d.setDate(d.getDate() + offsetDays)
+      return d.toISOString().slice(0, 10)
+    }
+
+    // 1. Scheduled service requests (requested / assigned / in_progress)
+    const openRequests = this.state.serviceRequests.filter(
+      r =>
+        r.installation_id === installationId &&
+        (r.status === 'requested' || r.status === 'assigned' || r.status === 'in_progress')
+    )
+
+    openRequests.forEach((req, idx) => {
+      const dateStr = req.scheduled_date || addDaysStr(idx === 0 ? 4 : 9 + idx * 3)
+      events.push({
+        id: `cal-sr-${req.id}`,
+        installation_id: installationId,
+        date: dateStr,
+        kind: 'scheduled_check',
+        title: `${req.issue_category.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())} (${req.id})`,
+        description: req.description,
+        priority: req.status === 'in_progress' || req.issue_category === 'inverter_error' ? 'high' : 'medium',
+        status: req.status,
+        technician_name: req.technician_name,
+        source_id: req.id,
+      })
+    })
+
+    // 2. Routine preventive inspection + warranty milestone check
+    events.push({
+      id: `cal-routine-${installationId}`,
+      installation_id: installationId,
+      date: addDaysStr(14),
+      kind: 'routine_inspection',
+      title: 'Scheduled Array & Inverter Checkup',
+      description: 'Bi-weekly telemetry review, DC combiner thermal check, and panel surface inspection.',
+      priority: 'low',
+      status: 'scheduled',
+    })
+
+    const warranties = this.getWarranties(installationId)
+    for (const w of warranties) {
+      if (w.warranty_end && w.days_remaining !== null && w.days_remaining > 0 && w.days_remaining <= 45) {
+        events.push({
+          id: `cal-war-${w.component_id}`,
+          installation_id: installationId,
+          date: w.warranty_end.slice(0, 10),
+          kind: 'routine_inspection',
+          title: `Warranty Expiring: ${w.manufacturer} ${w.model}`,
+          description: `Complete pre-warranty inspection for ${w.component_type} before coverage ends.`,
+          priority: 'medium',
+          status: 'scheduled',
+        })
+      }
+    }
+
+    // 3. ML Predicted Service Windows
+    const mlReport = this.runMLDiagnostics(installationId)
+    const activeMlAlerts = mlReport.predictive_alerts.filter(
+      a => a.status === 'active' || a.status === 'acknowledged'
+    )
+
+    if (activeMlAlerts.length > 0) {
+      for (const alert of activeMlAlerts) {
+        const leadDays = alert.predicted_days_to_critical ?? 10
+        const startOffset = Math.max(1, Math.floor(leadDays * 0.35))
+        const endOffset = Math.max(startOffset + 2, Math.floor(leadDays * 0.65))
+        const targetLabel =
+          alert.component_target === 'inverter'
+            ? 'Inverter & MPPT Preventive Window'
+            : alert.component_target === 'thermal'
+            ? 'Thermal Airflow Service Window'
+            : 'Panel Cleaning & String Check Window'
+
+        events.push({
+          id: `cal-ml-${alert.id}`,
+          installation_id: installationId,
+          date: addDaysStr(startOffset),
+          window_end_date: addDaysStr(endOffset),
+          kind: 'ml_predicted_window',
+          title: `ML Predicted: ${targetLabel}`,
+          description:
+            alert.recommended_action ||
+            `Preventive service recommended ~${leadDays} days ahead of predicted critical threshold.`,
+          priority: alert.severity === 'warning' ? 'high' : 'medium',
+          status: alert.status,
+          confidence: alert.confidence,
+          source_id: alert.id,
+        })
+      }
+    } else {
+      // Optimal preventive window recommended by ML baseline trajectory
+      events.push({
+        id: `cal-ml-optimal-${installationId}`,
+        installation_id: installationId,
+        date: addDaysStr(18),
+        window_end_date: addDaysStr(20),
+        kind: 'ml_predicted_window',
+        title: 'ML Predicted: Optimal Preventive Window',
+        description: `Based on current Panel (${mlReport.panel_health_score}%) and Inverter (${mlReport.inverter_health_score}%) ML health scores, this 3-day window is ideal for routine preventive maintenance.`,
+        priority: 'low',
+        status: 'recommended',
+        confidence: 0.91,
+      })
+    }
+
+    return events.sort((a, b) => a.date.localeCompare(b.date))
   }
 
   updateServiceRequest(

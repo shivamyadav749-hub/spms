@@ -65,7 +65,8 @@ export function ServiceHistory() {
           <Select
             value={selectedInstallation}
             onChange={e => setSelectedInstallation(e.target.value)}
-            className="w-64"
+            wrapperClassName="w-full sm:w-auto"
+            className="w-full sm:w-64"
             options={installations.map(inst => ({ value: inst.id, label: `${inst.name} (${inst.spms_id})` }))}
           />
         )}
@@ -87,21 +88,21 @@ export function ServiceHistory() {
               </p>
             )}
             {records.map((r, i) => (
-              <div key={i} className="p-5 rounded-lg border border-gray-200 bg-gray-50/50 space-y-3">
+              <div key={i} className="p-4 sm:p-5 rounded-lg border border-gray-200 bg-gray-50/50 space-y-3">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-200 pb-3">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-start sm:items-center gap-3">
                     <div className="h-10 w-10 rounded-lg bg-solar-100 text-solar-700 flex items-center justify-center flex-shrink-0">
                       <FileText className="h-5 w-5" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900">{r.description}</h4>
+                      <h4 className="font-semibold text-gray-900 text-sm sm:text-base">{r.description}</h4>
                       <p className="text-xs text-gray-500 flex items-center gap-1 mt-0.5">
                         <Calendar className="h-3 w-3" /> Performed on{' '}
                         {new Date(r.performed_at).toLocaleDateString()}
                       </p>
                     </div>
                   </div>
-                  <Badge variant="success">
+                  <Badge variant="success" className="self-start sm:self-center flex-shrink-0">
                     <CheckCircle className="h-3 w-3 mr-1" /> Verified Record
                   </Badge>
                 </div>

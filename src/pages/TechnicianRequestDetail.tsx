@@ -76,15 +76,15 @@ export function TechnicianRequestDetail() {
     <div className="space-y-6 max-w-4xl mx-auto">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <Link to="/technician/requests">
-            <Button variant="ghost">
+        <div className="flex items-start sm:items-center gap-2.5 sm:gap-3 min-w-0">
+          <Link to="/technician/requests" className="flex-shrink-0">
+            <Button variant="ghost" size="sm">
               <ArrowLeft className="h-4 w-4 mr-1" /> Back
             </Button>
           </Link>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold text-gray-900">{request.id}</h1>
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900">{request.id}</h1>
               <Badge variant={getStatusVariant(request.status)}>
                 {request.status.replace('_', ' ')}
               </Badge>
@@ -96,19 +96,19 @@ export function TechnicianRequestDetail() {
         </div>
 
         {/* Quick Lifecycle Action Buttons */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
           {request.status === 'assigned' && (
-            <Button onClick={() => updateStatus('in_progress')}>
+            <Button onClick={() => updateStatus('in_progress')} className="w-full sm:w-auto">
               <Wrench className="h-4 w-4 mr-1.5" /> Start Work
             </Button>
           )}
           {request.status === 'in_progress' && (
-            <Button variant="secondary" onClick={() => updateStatus('completed')}>
+            <Button variant="secondary" onClick={() => updateStatus('completed')} className="w-full sm:w-auto">
               <CheckCircle className="h-4 w-4 mr-1.5" /> Mark Completed
             </Button>
           )}
           {request.status === 'requested' && (
-            <Button onClick={() => updateStatus('assigned')}>
+            <Button onClick={() => updateStatus('assigned')} className="w-full sm:w-auto">
               Accept Assignment
             </Button>
           )}
@@ -136,21 +136,21 @@ export function TechnicianRequestDetail() {
             </div>
 
             <div className="pt-2 space-y-2">
-              <div className="flex justify-between py-1 border-b border-gray-100">
-                <span className="text-gray-500">Installation:</span>
-                <span className="font-medium text-gray-900">{request.installation_name || 'Home Solar'}</span>
+              <div className="flex justify-between gap-3 py-1 border-b border-gray-100">
+                <span className="text-gray-500 flex-shrink-0">Installation:</span>
+                <span className="font-medium text-gray-900 text-right">{request.installation_name || 'Home Solar'}</span>
               </div>
-              <div className="flex justify-between py-1 border-b border-gray-100">
-                <span className="text-gray-500">Requested By:</span>
-                <span className="font-mono text-xs text-gray-600">{request.requested_by}</span>
+              <div className="flex justify-between gap-3 py-1 border-b border-gray-100">
+                <span className="text-gray-500 flex-shrink-0">Requested By:</span>
+                <span className="font-mono text-xs text-gray-600 truncate text-right">{request.requested_by}</span>
               </div>
-              <div className="flex justify-between py-1 border-b border-gray-100">
-                <span className="text-gray-500">Created:</span>
-                <span className="font-medium text-gray-900">{new Date(request.created_at).toLocaleString()}</span>
+              <div className="flex justify-between gap-3 py-1 border-b border-gray-100">
+                <span className="text-gray-500 flex-shrink-0">Created:</span>
+                <span className="font-medium text-gray-900 text-right">{new Date(request.created_at).toLocaleString()}</span>
               </div>
-              <div className="flex justify-between py-1">
-                <span className="text-gray-500">Completion Status:</span>
-                <span className="font-medium text-gray-900">
+              <div className="flex justify-between gap-3 py-1">
+                <span className="text-gray-500 flex-shrink-0">Completion Status:</span>
+                <span className="font-medium text-gray-900 text-right">
                   {request.completed_at ? new Date(request.completed_at).toLocaleString() : 'In field'}
                 </span>
               </div>
@@ -212,7 +212,7 @@ export function TechnicianRequestDetail() {
             )}
             {request.records?.map(rec => (
               <div key={rec.id} className="p-4 rounded-lg border border-gray-200 bg-gray-50/50 space-y-2">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                   <h4 className="font-semibold text-gray-900 text-sm">{rec.description}</h4>
                   <span className="text-xs text-gray-400">
                     {new Date(rec.performed_at).toLocaleString()}

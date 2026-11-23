@@ -10,11 +10,12 @@ export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label?: string
   error?: string
   options: SelectOption[]
+  wrapperClassName?: string
 }
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
-  ({ className, label, error, options, ...props }, ref) => (
-    <div className="w-full">
+  ({ className, wrapperClassName, label, error, options, ...props }, ref) => (
+    <div className={clsx('w-full', wrapperClassName)}>
       {label && <label className="label">{label}</label>}
       <select
         ref={ref}

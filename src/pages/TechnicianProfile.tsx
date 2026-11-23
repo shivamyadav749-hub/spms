@@ -84,7 +84,7 @@ export function TechnicianProfile() {
       </div>
 
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
+        <CardHeader className="flex flex-wrap items-center justify-between gap-2">
           <CardTitle>Professional Profile</CardTitle>
           <Badge variant={profile?.verification_status === 'verified' ? 'success' : 'warning'}>
             <Shield className="h-3 w-3 mr-1" /> Verified Professional
@@ -148,9 +148,9 @@ export function TechnicianProfile() {
             </div>
           </div>
 
-          <div className="pt-2 border-t border-gray-100 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Wrench className="h-4 w-4 text-gray-400" />
+          <div className="pt-2 border-t border-gray-100 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2 min-w-0">
+              <Wrench className="h-4 w-4 text-gray-400 flex-shrink-0" />
               <span className="text-sm font-medium text-gray-800">Available for customer dispatch</span>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">

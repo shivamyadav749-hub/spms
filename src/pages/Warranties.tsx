@@ -63,7 +63,8 @@ export function Warranties() {
           <Select
             value={selectedInstallation}
             onChange={e => setSelectedInstallation(e.target.value)}
-            className="w-64"
+            wrapperClassName="w-full sm:w-auto"
+            className="w-full sm:w-64"
             options={installations.map(inst => ({ value: inst.id, label: `${inst.name} (${inst.spms_id})` }))}
           />
         )}
@@ -75,7 +76,7 @@ export function Warranties() {
         </div>
       )}
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
         <StatCard
           title="Active"
           count={warranties.filter(w => w.status === 'Active').length}
@@ -128,13 +129,13 @@ export function Warranties() {
 function StatCard({ title, count, icon: Icon, color, bg }: any) {
   return (
     <Card>
-      <CardContent className="flex items-center gap-4 p-5">
-        <div className={`h-12 w-12 rounded-lg ${bg} flex items-center justify-center ${color} flex-shrink-0`}>
-          <Icon className="h-6 w-6" />
+      <CardContent className="flex items-center gap-3 sm:gap-4 p-3.5 sm:p-5">
+        <div className={`h-10 w-10 sm:h-12 sm:w-12 rounded-lg ${bg} flex items-center justify-center ${color} flex-shrink-0`}>
+          <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
         </div>
-        <div>
-          <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold">{title}</p>
-          <p className="text-2xl font-bold text-gray-900 mt-0.5">{count}</p>
+        <div className="min-w-0">
+          <p className="text-[11px] sm:text-xs text-gray-500 uppercase tracking-wider font-semibold truncate">{title}</p>
+          <p className="text-xl sm:text-2xl font-bold text-gray-900 mt-0.5">{count}</p>
         </div>
       </CardContent>
     </Card>

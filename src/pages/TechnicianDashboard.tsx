@@ -31,8 +31,8 @@ export function TechnicianDashboard() {
           <h1 className="text-2xl font-bold text-gray-900">Technician Portal</h1>
           <p className="text-gray-600 text-sm">Manage scheduled maintenance, diagnostics, and field service records</p>
         </div>
-        <Link to="/technician/requests">
-          <Button variant="outline">
+        <Link to="/technician/requests" className="w-full sm:w-auto">
+          <Button variant="outline" className="w-full sm:w-auto">
             View All Work Orders <ArrowRight className="h-4 w-4 ml-1" />
           </Button>
         </Link>
@@ -45,7 +45,7 @@ export function TechnicianDashboard() {
       )}
 
       {/* KPI Counters */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
         <StatCard
           title="Assigned"
           count={assigned.length}
@@ -127,13 +127,13 @@ export function TechnicianDashboard() {
 function StatCard({ title, count, icon: Icon, color, bg }: any) {
   return (
     <Card>
-      <CardContent className="flex items-center gap-4 p-5">
-        <div className={`h-12 w-12 rounded-lg ${bg} flex items-center justify-center ${color} flex-shrink-0`}>
-          <Icon className="h-6 w-6" />
+      <CardContent className="flex items-center gap-3 sm:gap-4 p-3.5 sm:p-5">
+        <div className={`h-10 w-10 sm:h-12 sm:w-12 rounded-lg ${bg} flex items-center justify-center ${color} flex-shrink-0`}>
+          <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
         </div>
-        <div>
-          <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold">{title}</p>
-          <p className="text-2xl font-bold text-gray-900 mt-0.5">{count}</p>
+        <div className="min-w-0">
+          <p className="text-[11px] sm:text-xs text-gray-500 uppercase tracking-wider font-semibold truncate">{title}</p>
+          <p className="text-xl sm:text-2xl font-bold text-gray-900 mt-0.5">{count}</p>
         </div>
       </CardContent>
     </Card>
